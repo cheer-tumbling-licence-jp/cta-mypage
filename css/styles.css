@@ -1,0 +1,406 @@
+/* =====================================================================
+ * CTA マイページ — 共通スタイル
+ * ===================================================================== */
+:root {
+  --navy: #143a5a;
+  --navy-dark: #0e2a42;
+  --accent: #2f7fb5;
+  --accent-light: #e7f1f8;
+  --gold: #c79a3a;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #21303b;
+  --muted: #6b7a86;
+  --line: #e2e8ee;
+  --good: #1e8e5a;
+  --good-bg: #e6f4ec;
+  --warn: #c0492b;
+  --warn-bg: #fbe9e4;
+  --pending: #9a7b1f;
+  --pending-bg: #fbf3dc;
+  --radius: 12px;
+  --shadow: 0 2px 10px rgba(20, 58, 90, 0.08);
+  --max: 960px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    "Yu Gothic", Meiryo, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+/* ---- ヘッダー ---- */
+.site-header {
+  background: linear-gradient(120deg, var(--navy), var(--navy-dark));
+  color: #fff;
+}
+.site-header .bar {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.brand .logo {
+  width: 38px; height: 38px;
+  border-radius: 9px;
+  background: var(--gold);
+  color: var(--navy-dark);
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 18px;
+}
+.brand small { display: block; font-weight: 400; font-size: 12px; opacity: .8; }
+.header-actions { display: flex; align-items: center; gap: 14px; font-size: 14px; }
+.header-actions .who { opacity: .9; }
+
+/* ---- レイアウト ---- */
+.wrap { max-width: var(--max); margin: 0 auto; padding: 24px 20px 64px; }
+.page-title { font-size: 22px; margin: 4px 0 2px; }
+.page-sub { color: var(--muted); margin: 0 0 22px; font-size: 14px; }
+
+/* ---- カード ---- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 22px;
+  margin-bottom: 20px;
+}
+.card h2 {
+  font-size: 16px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent-light);
+  display: flex; align-items: center; gap: 8px;
+}
+.card h2 .ic { color: var(--accent); }
+
+/* ---- バッジ ---- */
+.badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.badge.good { background: var(--good-bg); color: var(--good); }
+.badge.warn { background: var(--warn-bg); color: var(--warn); }
+.badge.pending { background: var(--pending-bg); color: var(--pending); }
+.badge.pin { background: var(--accent-light); color: var(--accent); }
+
+/* ---- 合否カード ---- */
+.result-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.result-item:last-child { margin-bottom: 0; }
+.result-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.result-head .lv { font-weight: 700; font-size: 15px; }
+.result-meta { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+.result-comment {
+  margin-top: 10px;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.result-comment .lab { color: var(--muted); font-size: 12px; display: block; margin-bottom: 2px; }
+
+/* ---- 合否の発表演出（タップで大きく表示） ---- */
+.reveal-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: #fff;
+}
+.reveal-card:last-child { margin-bottom: 0; }
+.reveal-btn {
+  width: 100%;
+  border: none;
+  background: var(--accent-light);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 18px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: background .2s;
+}
+.reveal-btn:hover { background: #d9e9f5; }
+.reveal-card.open .reveal-btn { display: none; }
+.reveal-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .5s ease;
+}
+.reveal-inner { padding: 28px 20px 24px; text-align: center; animation: fadeUp .6s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.reveal-exam { font-size: 13px; color: var(--muted); }
+.reveal-big {
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  margin: 8px 0 12px;
+  line-height: 1.1;
+}
+.reveal-big.good { color: var(--good); }
+.reveal-big.warn { color: var(--warn); }
+.reveal-msg { font-size: 14px; line-height: 1.9; }
+.reveal-msg b { font-weight: 800; }
+.reveal-note {
+  margin-top: 16px;
+  font-size: 13.5px;
+  line-height: 1.85;
+  text-align: left;
+  color: var(--text);
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+a.proc-btn {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 16px;
+  background: var(--good);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 15px;
+  border-radius: 10px;
+}
+a.proc-btn:hover { background: #176e47; }
+
+/* ---- 今後のお手続きページ ---- */
+.back-link {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+.back-link:hover { text-decoration: underline; }
+.proc-card h2 { align-items: flex-start; }
+.proc-no {
+  display: inline-grid;
+  place-items: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.proc-body { font-size: 14px; line-height: 1.85; }
+.proc-body .muted { font-size: 13px; }
+.proc-list { margin: 10px 0 6px; padding-left: 0; list-style: none; }
+.proc-list li {
+  position: relative;
+  padding: 6px 0 6px 18px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.proc-list li:last-child { border-bottom: none; }
+.proc-list li::before {
+  content: "・";
+  position: absolute;
+  left: 2px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.bank-box {
+  margin-top: 12px;
+  background: var(--accent-light);
+  border: 1px solid #cfe2f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.bank-box .bank-label {
+  font-weight: 800;
+  color: var(--navy);
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.bank-box .muted { font-size: 12px; }
+
+/* ---- 新着情報 ---- */
+.news-item { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.news-item:last-child { border-bottom: none; padding-bottom: 0; }
+.news-item .t { font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.news-item .d { color: var(--muted); font-size: 12px; margin: 2px 0 6px; }
+.news-item .b { font-size: 14px; }
+.pin-flag { color: var(--warn); font-size: 12px; font-weight: 700; }
+
+/* ---- 次のステップ ---- */
+.step { display: flex; gap: 10px; padding: 8px 0; align-items: flex-start; }
+.step .dot { margin-top: 8px; width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.step.good .dot { background: var(--good); }
+.step.warn .dot { background: var(--warn); }
+.step.info .dot { background: var(--accent); }
+
+/* ---- ボタン ---- */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: none; cursor: pointer;
+  background: var(--accent); color: #fff;
+  font-weight: 700; font-size: 14px;
+  padding: 10px 18px; border-radius: 9px;
+  text-decoration: none;
+}
+.btn:hover { background: #266a98; }
+.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.btn.ghost:hover { background: var(--accent-light); }
+.btn.danger { background: var(--warn); }
+.btn.sm { padding: 6px 12px; font-size: 13px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---- フォーム ---- */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--navy); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fff;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+.field textarea { min-height: 80px; resize: vertical; }
+.field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ---- ログイン画面 ---- */
+.login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #102d47, #1c4f78);
+}
+.login-card {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 16px;
+  padding: 34px 30px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.25);
+}
+.login-card .brand { color: var(--navy); justify-content: center; margin-bottom: 6px; }
+.login-card h1 { text-align: center; font-size: 19px; margin: 6px 0 4px; }
+.login-card .lead { text-align: center; color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+.login-card .btn { width: 100%; justify-content: center; padding: 13px; font-size: 15px; }
+.login-foot { text-align: center; margin-top: 18px; font-size: 13px; }
+
+/* ---- はじめての方ボックス（初回パスワード設定を目立たせる） ---- */
+.firsttime-box {
+  margin-top: 22px;
+  background: #fbf6e9;
+  border: 1px solid #ecd9a6;
+  border-radius: 12px;
+  padding: 16px 16px 18px;
+  text-align: center;
+}
+.firsttime-label {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #8a6516;
+}
+.firsttime-note {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #9a7b3a;
+  line-height: 1.6;
+}
+.firsttime-btn {
+  width: 100%;
+  justify-content: center;
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-size: 15px;
+  padding: 13px;
+}
+.firsttime-btn:hover { background: #b88a2f; }
+
+/* ---- メッセージ ---- */
+.alert { border-radius: 9px; padding: 11px 14px; font-size: 14px; margin-bottom: 16px; }
+.alert.error { background: var(--warn-bg); color: var(--warn); }
+.alert.ok { background: var(--good-bg); color: var(--good); }
+.alert.info { background: var(--accent-light); color: var(--accent); }
+
+/* ---- セキュリティ注記（モック告知） ---- */
+.mock-banner {
+  background: #fff7e6;
+  border-bottom: 1px solid #f0d9a0;
+  color: #8a6516;
+  font-size: 13px;
+  text-align: center;
+  padding: 8px 16px;
+}
+
+/* ---- タブ ---- */
+.tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab {
+  padding: 9px 18px; border-radius: 9px;
+  background: #fff; border: 1px solid var(--line);
+  cursor: pointer; font-weight: 700; font-size: 14px; color: var(--muted);
+}
+.tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+/* ---- テーブル ---- */
+.table-wrap { overflow-x: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td {
+  text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.data th { background: var(--accent-light); color: var(--navy); font-size: 13px; }
+table.data tr:hover td { background: #fafcfe; }
+
+/* ---- ユーティリティ ---- */
+.muted { color: var(--muted); }
+.right { text-align: right; }
+.row-actions { display: flex; gap: 8px; }
+.empty { color: var(--muted); text-align: center; padding: 24px; font-size: 14px; }
+.spacer { height: 8px; }
+hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .page-title { font-size: 19px; }
+  .header-actions .who { display: none; }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>今後のお手続きについて｜チアタンブリング協会</title>
+  <link rel="stylesheet" href="css/styles.css?v=20260618g" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar">
+      <div class="brand">
+        <div class="logo">CTA</div>
+        <div>チアタンブリング協会<small>受講者マイページ</small></div>
+      </div>
+      <div class="header-actions">
+        <span class="who" id="who"></span>
+        <button class="btn ghost sm" id="logoutBtn">ログアウト</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <a href="mypage.html" class="back-link">← マイページに戻る</a>
+    <h1 class="page-title">今後のお手続きについて</h1>
+    <p class="page-sub" id="leadSub"></p>
+
+    <div id="proc"><p class="empty">読み込み中…</p></div>
+
+    <div style="margin-top:24px">
+      <a href="mypage.html" class="btn ghost">← マイページに戻る</a>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=20260618g"></script>
+  <script src="js/data.supabase.js?v=20260618g"></script>
+  <script src="js/procedures.js?v=20260618g"></script>
+</body>
+</html>

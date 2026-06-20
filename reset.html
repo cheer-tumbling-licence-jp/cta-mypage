@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>パスワード再設定｜チアタンブリング協会</title>
+  <link rel="stylesheet" href="css/styles.css?v=20260618g" />
+</head>
+<body>
+  <div class="login-screen">
+    <div class="login-card">
+      <div class="brand">
+        <div class="logo">CTA</div>
+        <div>チアタンブリング協会<small>受講者マイページ</small></div>
+      </div>
+      <h1>パスワードの再設定</h1>
+      <p class="lead">新しいパスワードを入力してください。</p>
+      <div id="alert"></div>
+      <form id="form">
+        <div class="field">
+          <label for="pw">新しいパスワード</label>
+          <input type="password" id="pw" autocomplete="new-password" placeholder="8文字以上・英字と数字を含む" />
+          <div class="hint"><strong>8文字以上</strong>で、<strong>英字と数字を両方</strong>含めてください。</div>
+        </div>
+        <button class="btn" type="submit" id="btn">パスワードを設定する</button>
+      </form>
+      <div class="login-foot"><a href="index.html">ログイン画面へ</a></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=20260618g"></script>
+  <script src="js/reset.js?v=20260618g"></script>
+</body>
+</html>

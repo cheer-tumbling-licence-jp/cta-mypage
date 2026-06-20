@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>受講者マイページ ログイン｜チアタンブリング協会</title>
+  <link rel="stylesheet" href="css/styles.css?v=20260618g" />
+</head>
+<body>
+  <div class="login-screen">
+    <div class="login-card">
+      <div class="brand">
+        <div class="logo">CTA</div>
+        <div>チアタンブリング協会<small>指導ライセンス 受講者マイページ</small></div>
+      </div>
+
+      <!-- ログイン -->
+      <div id="loginView">
+        <h1>受講者ログイン</h1>
+        <p class="lead">登録したメールアドレスとパスワードでログインしてください。</p>
+        <div id="alert"></div>
+        <form id="loginForm">
+          <div class="field">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" autocomplete="username" placeholder="you@example.com" />
+          </div>
+          <div class="field">
+            <label for="pw">パスワード</label>
+            <input type="password" id="pw" autocomplete="current-password" placeholder="ご自身で設定したパスワード" />
+          </div>
+          <button class="btn" type="submit" id="loginBtn">ログイン</button>
+        </form>
+
+        <div class="firsttime-box">
+          <p class="firsttime-label">はじめてご利用の方はこちら</p>
+          <p class="firsttime-note">まだパスワードを設定していない方は、最初にこちらから設定してください。</p>
+          <button type="button" class="btn firsttime-btn" id="toSignup">🔑 はじめてのパスワード設定</button>
+        </div>
+
+        <div class="login-foot">
+          <a href="#" id="toReset" style="font-size:13px">パスワードを忘れた方</a>
+        </div>
+      </div>
+
+      <!-- 初回パスワード設定（サインアップ） -->
+      <div id="signupView" style="display:none">
+        <h1>はじめてのログイン</h1>
+        <p class="lead">協会に登録されたメールアドレスと、ご自身で決めるパスワードを入力してください。</p>
+        <div id="alertSignup"></div>
+        <form id="signupForm">
+          <div class="field">
+            <label for="suEmail">メールアドレス</label>
+            <input type="email" id="suEmail" autocomplete="username" placeholder="協会に登録したメール" />
+          </div>
+          <div class="field">
+            <label for="suPw">新しいパスワード</label>
+            <input type="password" id="suPw" autocomplete="new-password" placeholder="8文字以上・英字と数字を含む" />
+            <div class="hint"><strong>8文字以上</strong>で、<strong>英字（a〜z）と数字（0〜9）を両方</strong>含めてください。<br>例：<code>Cheer2026</code>　／　忘れないよう保管してください。</div>
+          </div>
+          <button class="btn" type="submit" id="signupBtn">パスワードを設定する</button>
+        </form>
+        <div class="login-foot"><a href="#" id="backToLogin">ログイン画面に戻る</a></div>
+      </div>
+
+      <div class="login-foot" style="margin-top:18px">
+        <a href="admin.html">協会管理者の方はこちら</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=20260618g"></script>
+  <script src="js/data.supabase.js?v=20260618g"></script>
+  <script src="js/login.js?v=20260618g"></script>
+</body>
+</html>
