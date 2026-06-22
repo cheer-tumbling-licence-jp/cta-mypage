@@ -11,10 +11,15 @@ supabase_schema.sql
 *.py
 *.xlsx
 
-# 内部メモ・テスト
+# 内部メモ・テスト・配布物
 README.md
 *_test.html
 assets/
+配布用QR/
 
 # OS
 .DS_Store
+
+# 秘密のカギ（絶対に公開しない）
+.secrets.json
+sync_to_supabase.py

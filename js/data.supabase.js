@@ -27,9 +27,19 @@
     return { role: "member", email: data.session.user.email, userId: data.session.user.id };
   }
 
+  // アプリの公開フォルダURL（…/cta-mypage/）を求める
+  function appBaseUrl() {
+    return location.origin + location.pathname.replace(/[^/]*$/, "");
+  }
+
   // 初回：本人がパスワードを設定（メール＝既存登録メールと一致すれば自動でひもづく）
+  // 確認メールのリンクの戻り先を必ずアプリ本体に固定（404防止）
   async function signUpMember(email, password) {
-    const { data, error } = await client.auth.signUp({ email: email.trim(), password });
+    const { data, error } = await client.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { emailRedirectTo: appBaseUrl() },
+    });
     if (error) throw new Error(jp(error.message));
     return { needsConfirm: !data.session, session: data.session };
   }
