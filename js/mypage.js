@@ -147,14 +147,27 @@
           return (
             '<div class="result-item">' +
               '<div class="result-head"><span class="lv">' + esc(c.title) + "</span>" +
-                '<button class="btn sm" data-cert="' + esc(c.certId) + '">📥 ダウンロード</button></div>' +
+                '<button class="btn sm" data-member="' + esc(c.memberId) + '">📥 ダウンロード</button></div>' +
               '<div class="result-meta">' + meta + "</div>" +
             "</div>"
           );
         }).join("");
-        el.querySelectorAll("[data-cert]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            alert("（準備中）認定証PDFのダウンロードは、次の段階で安全なリンク配信を設定します。");
+        el.querySelectorAll("[data-member]").forEach(function (btn) {
+          btn.addEventListener("click", async function () {
+            const orig = btn.textContent;
+            btn.disabled = true; btn.textContent = "準備中…";
+            try {
+              const url = await D.getCertificateUrl(btn.getAttribute("data-member"));
+              if (url) {
+                location.href = url;
+              } else {
+                alert("認定証は現在発行準備中です。発行されましたら、こちらからダウンロードできます。");
+              }
+            } catch (e) {
+              alert("認定証は現在発行準備中です。発行されましたら、こちらからダウンロードできます。");
+            } finally {
+              btn.disabled = false; btn.textContent = orig;
+            }
           });
         });
       }

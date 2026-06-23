@@ -117,6 +117,18 @@
     return Math.round((a - b) / 86400000);
   }
 
+  // 認定証PDFの短時間有効リンク（合格者が自分の分だけ取得可。なければ null）
+  async function getCertificateUrl(memberCode) {
+    const path = (memberCode || "") + ".pdf";
+    try {
+      const { data, error } = await client.storage.from("certificates").createSignedUrl(path, 120);
+      if (error || !data) return null;
+      return data.signedUrl;
+    } catch (e) {
+      return null;
+    }
+  }
+
   // 振込先（payment_info）— RLSにより合格者のみ読める。不合格/未ログインは空→null
   async function getPaymentInfo() {
     const { data, error } = await client.from("payment_info").select("*").limit(1);
@@ -159,7 +171,7 @@
     currentSession,
     signUpMember, loginMemberEmail, sendPasswordReset, logout,
     getMyProfile, getMyResults, getMyCertificates, getMyNews, getMyNextSteps,
-    getPaymentInfo,
+    getPaymentInfo, getCertificateUrl,
     _backend: "supabase",
   };
 })();
