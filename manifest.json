@@ -1,0 +1,13 @@
+{
+  "name": "チアタンブリング協会 受講者マイページ",
+  "short_name": "CTAマイページ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#143a5a",
+  "theme_color": "#143a5a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
