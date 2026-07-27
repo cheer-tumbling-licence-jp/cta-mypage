@@ -1,0 +1,30 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # 毎週月曜 03:00 UTC（日本時間 月曜 12:00）に実行
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase to prevent Free plan auto-pause
+        env:
+          SUPABASE_URL: https://wqxoesrqykdwzfwzkavk.supabase.co
+          SUPABASE_ANON_KEY: sb_publishable_Wb3qUGozdkrhjtmnx0dYng_MmrAUKJ2
+        run: |
+          set -e
+          echo "Pinging Supabase at $(date -u)"
+          RESPONSE=$(curl -sS -w "\nHTTP_STATUS:%{http_code}\n" \
+            "$SUPABASE_URL/rest/v1/news?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "$RESPONSE"
+          STATUS=$(echo "$RESPONSE" | grep HTTP_STATUS | cut -d: -f2)
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "206" ]; then
+            echo "::error::Supabase ping failed with status $STATUS"
+            exit 1
+          fi
+          echo "OK: Supabase is alive"
