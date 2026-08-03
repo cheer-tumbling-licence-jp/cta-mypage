@@ -404,3 +404,139 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
   .page-title { font-size: 19px; }
   .header-actions .who { display: none; }
 }
+
+/* =====================================================================
+ * ホーム画面追加の促し（モーダル＋バナー）
+ * ===================================================================== */
+.no-scroll { overflow: hidden; }
+
+/* ---- モーダル ---- */
+.install-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(14, 42, 66, 0.62);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; overflow: auto;
+  animation: overlay-fade 220ms ease-out;
+}
+@keyframes overlay-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.install-modal {
+  width: 100%; max-width: 460px;
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+  animation: modal-pop 260ms cubic-bezier(.2,.9,.3,1.2);
+}
+@keyframes modal-pop {
+  from { transform: translateY(20px) scale(.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1);      opacity: 1; }
+}
+.install-head {
+  padding: 26px 20px 18px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--accent-light), #fff);
+  border-bottom: 1px solid var(--line);
+}
+.install-icon { font-size: 46px; margin-bottom: 6px; line-height: 1; }
+.install-title {
+  margin: 4px 0 8px;
+  font-size: 20px; line-height: 1.45;
+  color: var(--navy);
+}
+.install-sub {
+  color: var(--muted);
+  font-size: 14px; line-height: 1.7;
+  margin: 0;
+}
+.install-body { padding: 16px 20px; }
+.ins-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--navy);
+  font-size: 15px;
+}
+.ins-list { padding-left: 22px; margin: 0 0 10px; }
+.ins-list li { margin-bottom: 8px; line-height: 1.7; font-size: 14px; }
+.ins-key {
+  display: inline-block;
+  min-width: 22px; padding: 0 6px;
+  background: var(--navy); color: #fff;
+  border-radius: 5px; font-weight: 700;
+  text-align: center; margin: 0 2px;
+  font-size: 13px; line-height: 20px;
+}
+.ins-note {
+  font-size: 12.5px; color: var(--muted);
+  border-top: 1px dashed var(--line);
+  padding-top: 10px; margin-top: 6px;
+}
+.install-actions {
+  padding: 12px 20px 20px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.install-actions .btn { flex: 1; min-width: 140px; }
+.install-actions .btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+/* ---- バナー ---- */
+.install-banner {
+  position: fixed;
+  left: 12px; right: 12px; bottom: 12px;
+  z-index: 800;
+  display: flex; align-items: stretch;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(20, 58, 90, 0.20);
+  max-width: 560px;
+  margin: 0 auto;
+  animation: banner-slide-up 260ms ease-out;
+}
+@keyframes banner-slide-up {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.install-banner-body {
+  flex: 1;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 6px 12px 14px;
+  background: transparent; border: none;
+  text-align: left; cursor: pointer;
+  font-family: inherit; color: inherit;
+}
+.install-banner-icon { font-size: 26px; flex: 0 0 auto; line-height: 1; }
+.install-banner-text {
+  flex: 1;
+  display: flex; flex-direction: column;
+  line-height: 1.4;
+  font-size: 14px;
+}
+.install-banner-text b { color: var(--navy); }
+.install-banner-sub {
+  font-size: 12px; color: var(--muted); margin-top: 2px;
+}
+.install-banner-close {
+  flex: 0 0 auto;
+  width: 44px;
+  border: none; background: transparent;
+  color: var(--muted);
+  font-size: 18px; cursor: pointer;
+  border-radius: 0 12px 12px 0;
+}
+.install-banner-close:hover {
+  background: var(--accent-light); color: var(--navy);
+}
+
+@media (max-width: 480px) {
+  .install-actions { flex-direction: column-reverse; }
+  .install-actions .btn { width: 100%; }
+  .install-title { font-size: 18px; }
+  .install-icon { font-size: 40px; }
+}
