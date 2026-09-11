@@ -61,7 +61,8 @@
 
   // ---- データ取得（RLS により自動的に「自分の分だけ」） -------------
   function mapMember(r) {
-    return { memberId: r.member_code, name: r.name, kana: r.kana, org: r.org, email: r.email };
+    return { memberId: r.member_code, name: r.name, kana: r.kana, org: r.org, email: r.email,
+             notifyEmail: r.notify_email !== false };
   }
   function mapResult(r) {
     return {
@@ -165,13 +166,24 @@
     return steps;
   }
 
+  // 通知設定を更新（本人のみ／RLS で強制）
+  async function updateNotifyEmail(enabled) {
+    const s = await currentSession();
+    if (!s) throw new Error("ログインが必要です");
+    const { error } = await client.from("members")
+      .update({ notify_email: !!enabled })
+      .eq("user_id", s.userId);
+    if (error) throw new Error(jp(error.message));
+    return true;
+  }
+
   // ---- 公開API（モック版と同じ窓口） -------------------------------
   window.CTA = window.CTA || {};
   window.CTA.data = {
     currentSession,
     signUpMember, loginMemberEmail, sendPasswordReset, logout,
     getMyProfile, getMyResults, getMyCertificates, getMyNews, getMyNextSteps,
-    getPaymentInfo, getCertificateUrl,
+    getPaymentInfo, getCertificateUrl, updateNotifyEmail,
     _backend: "supabase",
   };
 })();

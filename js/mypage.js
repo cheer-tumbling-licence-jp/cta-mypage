@@ -131,6 +131,34 @@
       }
     } catch (e) {}
 
+    // 通知設定（メール ON/OFF）
+    try {
+      const notifyEl = document.getElementById("notifyEmail");
+      const msgEl = document.getElementById("settingsMsg");
+      if (notifyEl && profile) {
+        notifyEl.checked = profile.notifyEmail !== false;
+        notifyEl.addEventListener("change", async function () {
+          notifyEl.disabled = true;
+          msgEl.className = "setting-msg";
+          msgEl.textContent = "保存中…";
+          try {
+            await D.updateNotifyEmail(notifyEl.checked);
+            msgEl.className = "setting-msg ok";
+            msgEl.textContent = notifyEl.checked
+              ? "✓ メール通知を受け取る設定にしました"
+              : "✓ メール通知を停止しました";
+          } catch (err) {
+            msgEl.className = "setting-msg err";
+            msgEl.textContent = "保存に失敗しました: " + err.message;
+            notifyEl.checked = !notifyEl.checked;
+          } finally {
+            notifyEl.disabled = false;
+            setTimeout(function () { msgEl.textContent = ""; msgEl.className = "setting-msg"; }, 4000);
+          }
+        });
+      }
+    } catch (e) {}
+
     // 認定証
     try {
       const certs = await D.getMyCertificates();

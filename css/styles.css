@@ -406,6 +406,71 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
 }
 
 /* =====================================================================
+ * 通知設定（トグルスイッチ）
+ * ===================================================================== */
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+}
+.setting-text { flex: 1; }
+.setting-title {
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+.setting-sub {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.setting-msg {
+  margin-top: 8px;
+  font-size: 13px;
+  min-height: 18px;
+}
+.setting-msg.ok   { color: var(--good); }
+.setting-msg.err  { color: var(--warn); }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #ccc;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+.switch .slider::before {
+  content: "";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.switch input:checked + .slider { background: var(--good); }
+.switch input:checked + .slider::before { transform: translateX(22px); }
+.switch input:disabled + .slider { opacity: .5; cursor: wait; }
+
+/* =====================================================================
  * ホーム画面追加の促し（モーダル＋バナー）
  * ===================================================================== */
 .no-scroll { overflow: hidden; }
