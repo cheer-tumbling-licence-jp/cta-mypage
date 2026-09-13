@@ -34,11 +34,27 @@
   document.getElementById("toReset").addEventListener("click", async function (e) {
     e.preventDefault();
     const email = document.getElementById("email").value;
-    if (!email) { showError(alertBox, "先にメールアドレスを入力してください"); return; }
+    if (!email) { showError(alertBox, "先にメールアドレス欄にご登録のメールを入力してから、もう一度「パスワードを忘れた方」をタップしてください"); return; }
+    const link = document.getElementById("toReset");
+    link.style.pointerEvents = "none"; link.style.opacity = "0.5";
     try {
       await D.sendPasswordReset(email);
-      showOk(alertBox, "パスワード再設定メールを送りました。メールをご確認ください。");
-    } catch (err) { showError(alertBox, err.message); }
+      showOk(alertBox,
+        '<b>' + email + ' 宛にパスワード再設定メールを送りました。</b><br>' +
+        '① メールが届くまで最大5分待つ<br>' +
+        '② 届いたメール内の <b>「Reset Password」ボタン</b> をタップ<br>' +
+        '③ 開いたページで新しいパスワードを入力<br><br>' +
+        '<small>※ 届かない場合は<b>迷惑メールフォルダ</b>もご確認ください（差出人：<code>noreply@mail.app.supabase.io</code>）。<br>' +
+        '※ リンクの有効時間は <b>24時間</b> です。</small>');
+    } catch (err) {
+      var m = err.message || "";
+      if (/rate limit|too many|429/i.test(m)) {
+        showError(alertBox, "リクエストが多すぎます。恐れ入りますが、しばらく待ってから再度お試しください（15秒〜数分）。");
+      } else {
+        showError(alertBox, m);
+      }
+      link.style.pointerEvents = "auto"; link.style.opacity = "1";
+    }
   });
 
   // ログイン
