@@ -406,6 +406,94 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
 }
 
 /* =====================================================================
+ * 予習教材
+ * ===================================================================== */
+.card-lead { color: var(--muted); font-size: 13.5px; margin-bottom: 12px; }
+.prep-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  background: #fafcfe;
+}
+.prep-item:last-child { margin-bottom: 0; }
+.prep-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.prep-cat {
+  background: var(--navy);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.prep-title {
+  font-weight: 700;
+  font-size: 15.5px;
+  color: var(--navy);
+}
+.prep-dur {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.prep-desc {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.prep-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.prep-viewer:empty { display: none; }
+.error-msg { color: var(--warn); font-size: 13px; padding: 8px; }
+
+/* =====================================================================
+ * オンラインサロン カード
+ * ===================================================================== */
+.salon-card {
+  background: linear-gradient(135deg, #143a5a 0%, #2f7fb5 100%);
+  color: #fff;
+  border: none;
+}
+.salon-card h2 { color: #fff; }
+.salon-card .card-lead { color: rgba(255,255,255,.85); font-size: 13.5px; }
+.salon-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.salon-icon {
+  font-size: 40px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.salon-text { flex: 1; min-width: 200px; }
+.salon-btn {
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-weight: 700;
+  flex-shrink: 0;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+.salon-btn:hover { opacity: .9; color: var(--navy-dark); }
+@media (max-width: 500px) {
+  .salon-btn { width: 100%; text-align: center; }
+}
+
+/* =====================================================================
  * 通知設定（トグルスイッチ）
  * ===================================================================== */
 .setting-row {

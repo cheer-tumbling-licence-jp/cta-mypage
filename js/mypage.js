@@ -131,6 +131,65 @@
       }
     } catch (e) {}
 
+    // 予習教材
+    try {
+      const lessons = await D.getPrepLessons();
+      const el = document.getElementById("prepList");
+      if (!lessons.length) {
+        el.innerHTML = '<p class="empty">現在ご覧いただける予習教材はありません。</p>';
+      } else {
+        el.innerHTML = lessons.map(function (l) {
+          const cat = l.category ? '<span class="prep-cat">' + esc(l.category) + '</span>' : "";
+          const dur = l.durationMin ? esc(l.durationMin) + '分' : "";
+          return (
+            '<div class="prep-item" data-lesson-id="' + esc(l.id) + '">' +
+              '<div class="prep-head">' + cat +
+                '<span class="prep-title">' + esc(l.title) + '</span>' +
+                (dur ? '<span class="prep-dur">🕒 ' + dur + '</span>' : '') +
+              '</div>' +
+              (l.description ? '<div class="prep-desc">' + esc(l.description) + '</div>' : '') +
+              '<div class="prep-actions">' +
+                (l.audioPath ? '<button class="btn sm prep-play" data-path="' + esc(l.audioPath) + '" data-kind="audio">▶️ 音声を再生</button>' : '') +
+                (l.slidesPath ? '<button class="btn sm prep-play" data-path="' + esc(l.slidesPath) + '" data-kind="pdf">📄 スライドを見る</button>' : '') +
+              '</div>' +
+              '<div class="prep-viewer" id="viewer-' + esc(l.id) + '"></div>' +
+            '</div>'
+          );
+        }).join("");
+        el.querySelectorAll(".prep-play").forEach(function (btn) {
+          btn.addEventListener("click", async function () {
+            const path = btn.getAttribute("data-path");
+            const kind = btn.getAttribute("data-kind");
+            const card = btn.closest(".prep-item");
+            const viewer = card.querySelector(".prep-viewer");
+            const orig = btn.textContent;
+            btn.disabled = true; btn.textContent = "準備中…";
+            try {
+              const url = await D.getPrepSignedUrl(path);
+              if (!url) throw new Error("URLの取得に失敗しました");
+              if (kind === "audio") {
+                viewer.innerHTML =
+                  '<audio controls autoplay style="width:100%;margin-top:10px" preload="metadata">' +
+                    '<source src="' + url + '" type="audio/mp4">' +
+                    'お使いのブラウザは音声再生に対応していません。' +
+                  '</audio>';
+              } else {
+                viewer.innerHTML =
+                  '<div style="margin-top:10px">' +
+                    '<iframe src="' + url + '" style="width:100%;height:520px;border:1px solid var(--line);border-radius:8px" title="スライド"></iframe>' +
+                    '<p style="text-align:right;margin-top:6px"><a href="' + url + '" target="_blank" rel="noopener" class="btn sm">🔗 別タブで開く</a></p>' +
+                  '</div>';
+              }
+            } catch (err) {
+              viewer.innerHTML = '<p class="error-msg">読み込みに失敗しました。ページを再読み込みしてお試しください。</p>';
+            } finally {
+              btn.disabled = false; btn.textContent = orig;
+            }
+          });
+        });
+      }
+    } catch (e) {}
+
     // 通知設定（メール ON/OFF）
     try {
       const notifyEl = document.getElementById("notifyEmail");

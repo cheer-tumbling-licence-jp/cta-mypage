@@ -166,6 +166,29 @@
     return steps;
   }
 
+  // 予習教材（全受講者共通・複数件）
+  async function getPrepLessons() {
+    const { data, error } = await client.from("prep_lessons")
+      .select("*").order("order_index");
+    if (error) throw new Error(jp(error.message));
+    return (data || []).map((r) => ({
+      id: r.id, title: r.title, description: r.description || "",
+      category: r.category || "", audioPath: r.audio_path, slidesPath: r.slides_path,
+      durationMin: r.duration_min, publishedAt: r.published_at,
+    }));
+  }
+
+  // 予習教材の短時間有効な署名付き URL（受講者ログイン後のみ発行可）
+  async function getPrepSignedUrl(path) {
+    if (!path) return null;
+    try {
+      const { data, error } = await client.storage.from("prep-materials")
+        .createSignedUrl(path, 3600);  // 1時間
+      if (error || !data) return null;
+      return data.signedUrl;
+    } catch (e) { return null; }
+  }
+
   // 通知設定を更新（本人のみ／RLS で強制）
   async function updateNotifyEmail(enabled) {
     const s = await currentSession();
@@ -184,6 +207,7 @@
     signUpMember, loginMemberEmail, sendPasswordReset, logout,
     getMyProfile, getMyResults, getMyCertificates, getMyNews, getMyNextSteps,
     getPaymentInfo, getCertificateUrl, updateNotifyEmail,
+    getPrepLessons, getPrepSignedUrl,
     _backend: "supabase",
   };
 })();
