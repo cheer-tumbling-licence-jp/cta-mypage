@@ -166,6 +166,27 @@
     return steps;
   }
 
+  // 指導者向け資料（合格者のみ・RLSで自動絞り込み）
+  async function getTeachingMaterials() {
+    const { data, error } = await client.from("teaching_materials")
+      .select("*").order("order_index");
+    if (error) return [];  // 未合格などRLSで見えない場合は空扱い
+    return (data || []).map((r) => ({
+      id: r.id, title: r.title, description: r.description || "",
+      requiredLevel: r.required_level, filePath: r.file_path,
+      fileType: r.file_type || "pdf", publishedAt: r.published_at,
+    }));
+  }
+  async function getTeachingSignedUrl(path) {
+    if (!path) return null;
+    try {
+      const { data, error } = await client.storage.from("teaching-materials")
+        .createSignedUrl(path, 3600);
+      if (error || !data) return null;
+      return data.signedUrl;
+    } catch (e) { return null; }
+  }
+
   // 予習教材（全受講者共通・複数件）
   async function getPrepLessons() {
     const { data, error } = await client.from("prep_lessons")
@@ -208,6 +229,7 @@
     getMyProfile, getMyResults, getMyCertificates, getMyNews, getMyNextSteps,
     getPaymentInfo, getCertificateUrl, updateNotifyEmail,
     getPrepLessons, getPrepSignedUrl,
+    getTeachingMaterials, getTeachingSignedUrl,
     _backend: "supabase",
   };
 })();

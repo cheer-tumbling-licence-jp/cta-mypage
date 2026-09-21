@@ -406,6 +406,23 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
 }
 
 /* =====================================================================
+ * 指導者向け資料（合格者限定バッジ）
+ * ===================================================================== */
+.teach-card { border-left: 4px solid var(--gold); }
+.badge-cert {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: .04em;
+}
+
+/* =====================================================================
  * 予習教材
  * ===================================================================== */
 .card-lead { color: var(--muted); font-size: 13.5px; margin-bottom: 12px; }

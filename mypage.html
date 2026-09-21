@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>マイページ｜チアタンブリング協会</title>
-  <link rel="stylesheet" href="css/styles.css?v=20260917a" />
+  <link rel="stylesheet" href="css/styles.css?v=20260917b" />
   <link rel="apple-touch-icon" href="icon-180.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -48,6 +48,13 @@
       <div id="certs"><p class="empty">読み込み中…</p></div>
     </section>
 
+    <!-- 指導者向け資料（合格者のみ表示） -->
+    <section class="card teach-card" id="teachCard" style="display:none">
+      <h2><span class="ic">📚</span>指導者向け資料 <span class="badge-cert">合格者限定</span></h2>
+      <p class="card-lead">認定資格をお持ちの方向けの指導資料です。</p>
+      <div id="teachList"><p class="empty">読み込み中…</p></div>
+    </section>
+
     <!-- 予習教材 -->
     <section class="card" id="prepCard">
       <h2><span class="ic">🎧</span>予習教材</h2>
@@ -87,10 +94,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=20260917a"></script>
-  <script src="js/data.supabase.js?v=20260917a"></script>
-  <script src="js/mypage.js?v=20260917a"></script>
+  <script src="js/supabase-config.js?v=20260917b"></script>
+  <script src="js/data.supabase.js?v=20260917b"></script>
+  <script src="js/mypage.js?v=20260917b"></script>
   <script src="js/install-prompt.js?v=20260727a"></script>
-  <script src="js/badge.js?v=20260917a"></script>
+  <script src="js/badge.js?v=20260917b"></script>
 </body>
 </html>

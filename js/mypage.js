@@ -131,6 +131,57 @@
       }
     } catch (e) {}
 
+    // 指導者向け資料（合格者のみ表示）
+    try {
+      const materials = await D.getTeachingMaterials();
+      const card = document.getElementById("teachCard");
+      const el = document.getElementById("teachList");
+      if (materials.length > 0) {
+        card.style.display = "";
+        el.innerHTML = materials.map(function (m) {
+          const lvBadge = m.requiredLevel ? '<span class="prep-cat">' + esc(m.requiredLevel) + '</span>' : "";
+          return (
+            '<div class="prep-item" data-teach-id="' + esc(m.id) + '">' +
+              '<div class="prep-head">' + lvBadge +
+                '<span class="prep-title">' + esc(m.title) + '</span>' +
+              '</div>' +
+              (m.description ? '<div class="prep-desc">' + esc(m.description) + '</div>' : '') +
+              '<div class="prep-actions">' +
+                '<button class="btn sm teach-open" data-path="' + esc(m.filePath) + '" data-kind="' + esc(m.fileType) + '">📄 開く</button>' +
+              '</div>' +
+              '<div class="prep-viewer" id="tview-' + esc(m.id) + '"></div>' +
+            '</div>'
+          );
+        }).join("");
+        el.querySelectorAll(".teach-open").forEach(function (btn) {
+          btn.addEventListener("click", async function () {
+            const path = btn.getAttribute("data-path");
+            const kind = btn.getAttribute("data-kind");
+            const card = btn.closest(".prep-item");
+            const viewer = card.querySelector(".prep-viewer");
+            const orig = btn.textContent;
+            btn.disabled = true; btn.textContent = "準備中…";
+            try {
+              const url = await D.getTeachingSignedUrl(path);
+              if (!url) throw new Error("URL取得失敗");
+              if (kind === "audio") {
+                viewer.innerHTML = '<audio controls autoplay style="width:100%;margin-top:10px" preload="metadata"><source src="' + url + '"></audio>';
+              } else if (kind === "video") {
+                viewer.innerHTML = '<video controls autoplay style="width:100%;margin-top:10px;border-radius:8px"><source src="' + url + '"></video>';
+              } else {
+                viewer.innerHTML = '<div style="margin-top:10px"><iframe src="' + url + '" style="width:100%;height:520px;border:1px solid var(--line);border-radius:8px"></iframe><p style="text-align:right;margin-top:6px"><a href="' + url + '" target="_blank" rel="noopener" class="btn sm">🔗 別タブで開く</a></p></div>';
+              }
+            } catch (err) {
+              viewer.innerHTML = '<p class="error-msg">読み込みに失敗しました。</p>';
+            } finally {
+              btn.disabled = false; btn.textContent = orig;
+            }
+          });
+        });
+      }
+      // materials.length === 0 なら card は display:none のまま
+    } catch (e) {}
+
     // 予習教材
     try {
       const lessons = await D.getPrepLessons();
