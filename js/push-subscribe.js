@@ -116,8 +116,9 @@
       '</div>' +
       '<div class="push-msg" id="pushMsg"></div>';
     // 新着情報カードの直後に差し込む
-    var newsCard = main.querySelector(".card");
-    if (newsCard && newsCard.nextSibling) main.insertBefore(card, newsCard.nextSibling);
+    // 「新着情報」カードの直後に差し込む（見つからなければ先頭）
+    var firstCard = main.querySelector("section.card");
+    if (firstCard) main.insertBefore(card, firstCard.nextElementSibling || null);
     else main.appendChild(card);
 
     document.getElementById("pushEnableBtn").addEventListener("click", async function () {
@@ -167,28 +168,76 @@
         '</div>' +
         '<button type="button" class="btn push-btn" id="pushHowtoBtn">追加方法を見る</button>' +
       '</div>';
-    var newsCard = main.querySelector(".card");
-    if (newsCard && newsCard.nextSibling) main.insertBefore(card, newsCard.nextSibling);
+    // 「新着情報」カードの直後に差し込む（見つからなければ先頭）
+    var firstCard = main.querySelector("section.card");
+    if (firstCard) main.insertBefore(card, firstCard.nextElementSibling || null);
     else main.appendChild(card);
     document.getElementById("pushHowtoBtn").addEventListener("click", function () {
       if (window.CTA && window.CTA.showInstallGuide) window.CTA.showInstallGuide();
     });
   }
 
+  // 環境の状態を1行で返す（デバッグ表示にも使う）
+  function envInfo() {
+    return {
+      supported: supported(),
+      hasServiceWorker: "serviceWorker" in navigator,
+      hasPushManager: "PushManager" in window,
+      hasNotification: "Notification" in window,
+      permission: ("Notification" in window) ? Notification.permission : "n/a",
+      standalone: isStandalone(),
+      ios: isIOS(),
+    };
+  }
+
+  // 未対応環境向けの説明カード（なぜ通知が使えないかを必ず伝える）
+  function showUnsupportedCard(reason) {
+    if (document.getElementById("pushEnableCard")) return;
+    var main = document.querySelector("main.wrap");
+    if (!main) return;
+    var card = document.createElement("section");
+    card.className = "card push-card";
+    card.id = "pushEnableCard";
+    card.innerHTML =
+      '<div class="push-inner">' +
+        '<div class="push-icon">🔕</div>' +
+        '<div class="push-text">' +
+          '<div class="push-title">この端末では通知をお使いいただけません</div>' +
+          '<div class="push-sub">' + reason + '</div>' +
+        '</div>' +
+      '</div>';
+    main.appendChild(card);
+  }
+
   async function run() {
-    if (!supported()) return;
+    if (!supported()) {
+      // iOS 16.3 以前など、Push 非対応の環境
+      showUnsupportedCard(
+        "お使いのブラウザ／OSがプッシュ通知に対応していません。" +
+        "iPhoneの場合は iOS 16.4 以降にアップデートいただくとご利用いただけます。");
+      return;
+    }
+
     // Service Worker は常に登録しておく（バッジ更新にも使う）
     await registerSW();
 
     if (Notification.permission === "granted") {
       // 既に許可済み → 購読が生きているか確認して保存し直す
-      var reg = await navigator.serviceWorker.ready;
-      var sub = await reg.pushManager.getSubscription();
-      if (sub) { await saveSubscription(sub); }
-      else { await subscribe(); }
+      try {
+        var reg = await navigator.serviceWorker.ready;
+        var sub = await reg.pushManager.getSubscription();
+        if (sub) { await saveSubscription(sub); }
+        else { await subscribe(); }
+      } catch (e) {}
       return;
     }
-    if (Notification.permission === "denied") return;  // ブロック済みは触らない
+    if (Notification.permission === "denied") {
+      showUnsupportedCard(
+        "通知がブロックされています。<br>" +
+        "<small>iPhone：設定 →「通知」→「CTAマイページ」→「通知を許可」をオンにしてから、" +
+        "このページを開き直してください。</small>");
+      return;
+    }
 
     // iOS でホーム画面に追加していない場合は、まず追加を促す
     if (isIOS() && !isStandalone()) { showAddToHomeHint(); return; }
@@ -203,5 +252,11 @@
   }
 
   window.CTA = window.CTA || {};
-  window.CTA.push = { subscribe: subscribe, supported: supported, isStandalone: isStandalone };
+  window.CTA.push = {
+    subscribe: subscribe,
+    supported: supported,
+    isStandalone: isStandalone,
+    env: envInfo,            // 状態を確認したい時：CTA.push.env()
+    showCard: showEnableCard, // 手動でカードを出す：CTA.push.showCard()
+  };
 })();
