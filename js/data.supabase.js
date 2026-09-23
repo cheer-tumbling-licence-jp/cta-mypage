@@ -166,6 +166,26 @@
     return steps;
   }
 
+  // Web Push 購読情報を保存（本人のみ・RLSで保護）
+  async function savePushSubscription(sub) {
+    const s = await currentSession();
+    if (!s) throw new Error("ログインが必要です");
+    let memberCode = null;
+    try { const p = await getMyProfile(); memberCode = p && p.memberId; } catch (e) {}
+    const { error } = await client.from("push_subscriptions").upsert({
+      user_id: s.userId,
+      member_code: memberCode,
+      endpoint: sub.endpoint,
+      p256dh: sub.p256dh,
+      auth_key: sub.auth,
+      user_agent: sub.userAgent || "",
+      last_used: new Date().toISOString(),
+      is_active: true,
+    }, { onConflict: "endpoint" });
+    if (error) throw new Error(jp(error.message));
+    return true;
+  }
+
   // 指導者向け資料（合格者のみ・RLSで自動絞り込み）
   async function getTeachingMaterials() {
     const { data, error } = await client.from("teaching_materials")
@@ -230,6 +250,7 @@
     getPaymentInfo, getCertificateUrl, updateNotifyEmail,
     getPrepLessons, getPrepSignedUrl,
     getTeachingMaterials, getTeachingSignedUrl,
+    savePushSubscription,
     _backend: "supabase",
   };
 })();

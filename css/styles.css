@@ -406,6 +406,38 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
 }
 
 /* =====================================================================
+ * プッシュ通知の有効化カード
+ * ===================================================================== */
+.push-card {
+  border: 2px solid var(--gold);
+  background: linear-gradient(180deg, #fffdf5, #fff);
+}
+.push-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.push-icon { font-size: 32px; line-height: 1; flex-shrink: 0; }
+.push-text { flex: 1; min-width: 200px; }
+.push-title { font-weight: 700; color: var(--navy); font-size: 15.5px; margin-bottom: 4px; }
+.push-sub { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.push-btn {
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-weight: 700;
+  flex-shrink: 0;
+  padding: 10px 20px;
+}
+.push-btn:hover { opacity: .9; }
+.push-msg { margin-top: 10px; font-size: 13px; min-height: 0; }
+.push-msg.ok  { color: var(--good); }
+.push-msg.err { color: var(--warn); }
+@media (max-width: 500px) {
+  .push-btn { width: 100%; }
+}
+
+/* =====================================================================
  * 指導者向け資料（合格者限定バッジ）
  * ===================================================================== */
 .teach-card { border-left: 4px solid var(--gold); }
