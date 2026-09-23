@@ -105,17 +105,23 @@
     card.className = "card push-card";
     card.id = "pushEnableCard";
     card.innerHTML =
-      '<div class="push-inner">' +
+      '<div class="push-head">' +
         '<div class="push-icon">🔔</div>' +
-        '<div class="push-text">' +
-          '<div class="push-title">新着のお知らせを通知で受け取る</div>' +
-          '<div class="push-sub">合否の発表・新しいお知らせ・指導資料の追加を、' +
-            'アプリを開いていなくてもすぐにお知らせします。</div>' +
+        '<div class="push-headtext">' +
+          '<div class="push-title">大切なお知らせを見逃さないために</div>' +
+          '<div class="push-sub">このマイページは毎日開くものではありません。<br>' +
+            '通知をオンにしておくと、<b>開いていなくても</b>スマホにお知らせが届きます。</div>' +
         '</div>' +
-        '<button type="button" class="btn push-btn" id="pushEnableBtn">通知をオンにする</button>' +
       '</div>' +
+      '<ul class="push-benefits">' +
+        '<li><span class="pb-ic">📋</span>合否が発表されたとき</li>' +
+        '<li><span class="pb-ic">📢</span>協会から新しいお知らせが出たとき</li>' +
+        '<li><span class="pb-ic">📚</span>新しい指導資料が追加されたとき</li>' +
+      '</ul>' +
+      '<button type="button" class="btn push-btn-lg" id="pushEnableBtn">🔔 通知をオンにする</button>' +
+      '<div class="push-note">タップすると「通知を許可しますか？」と表示されます。' +
+        '<b>「許可」</b>を選んでください。</div>' +
       '<div class="push-msg" id="pushMsg"></div>';
-    // 新着情報カードの直後に差し込む
     // 「新着情報」カードの直後に差し込む（見つからなければ先頭）
     var firstCard = main.querySelector("section.card");
     if (firstCard) main.insertBefore(card, firstCard.nextElementSibling || null);
@@ -129,23 +135,27 @@
         var r = await subscribe();
         if (r.ok) {
           msg.className = "push-msg ok";
-          msg.textContent = "✓ 通知をオンにしました。新しいお知らせが届くとお知らせします。";
+          msg.innerHTML = "<b>✓ 通知をオンにしました</b><br>" +
+            "これから合否の発表や新しいお知らせが届くと、スマホにお知らせします。";
           safeSet(KEY_ASKED, "granted");
-          setTimeout(function () { card.remove(); }, 3000);
+          btn.textContent = "✓ 設定できました";
+          setTimeout(function () { card.remove(); }, 4000);
         } else if (r.reason === "denied") {
           msg.className = "push-msg err";
-          msg.innerHTML = "通知が許可されませんでした。<br>" +
-            "<small>iPhone：設定 → 通知 → CTAマイページ →「通知を許可」をオンにしてください。</small>";
-          btn.disabled = false; btn.textContent = "通知をオンにする";
+          msg.innerHTML = "<b>通知が許可されませんでした</b><br>" +
+            "iPhone の <b>設定</b> アプリ →「<b>通知</b>」→「<b>CTAマイページ</b>」→" +
+            "「<b>通知を許可</b>」をオンにしてから、このページを開き直してください。";
+          btn.disabled = false; btn.textContent = "🔔 通知をオンにする";
         } else {
           msg.className = "push-msg err";
-          msg.textContent = "設定に失敗しました。ページを再読み込みしてお試しください。";
-          btn.disabled = false; btn.textContent = "通知をオンにする";
+          msg.innerHTML = "<b>設定に失敗しました</b><br>" +
+            "お手数ですが、一度アプリを閉じて開き直してからもう一度お試しください。";
+          btn.disabled = false; btn.textContent = "🔔 通知をオンにする";
         }
       } catch (e) {
         msg.className = "push-msg err";
-        msg.textContent = "エラーが発生しました：" + (e.message || "");
-        btn.disabled = false; btn.textContent = "通知をオンにする";
+        msg.innerHTML = "<b>エラーが発生しました</b><br><small>" + (e.message || "") + "</small>";
+        btn.disabled = false; btn.textContent = "🔔 通知をオンにする";
       }
     });
   }
@@ -159,15 +169,21 @@
     card.className = "card push-card";
     card.id = "pushEnableCard";
     card.innerHTML =
-      '<div class="push-inner">' +
+      '<div class="push-head">' +
         '<div class="push-icon">🔔</div>' +
-        '<div class="push-text">' +
-          '<div class="push-title">新着のお知らせを通知で受け取るには</div>' +
-          '<div class="push-sub">先にこのページを<b>ホーム画面に追加</b>してください。' +
-            '追加後にアイコンから開くと、通知をオンにできます。</div>' +
+        '<div class="push-headtext">' +
+          '<div class="push-title">大切なお知らせを見逃さないために</div>' +
+          '<div class="push-sub">合否の発表や新しいお知らせを、' +
+            '<b>このページを開いていなくても</b>スマホにお届けできます。<br>' +
+            'ご利用には、先に<b>ホーム画面への追加</b>が必要です（iPhone の仕様です）。</div>' +
         '</div>' +
-        '<button type="button" class="btn push-btn" id="pushHowtoBtn">追加方法を見る</button>' +
-      '</div>';
+      '</div>' +
+      '<div class="push-steps">' +
+        '<div class="ps"><span class="ps-n">1</span>画面下の <b>共有ボタン</b>（□に↑）をタップ</div>' +
+        '<div class="ps"><span class="ps-n">2</span>「<b>ホーム画面に追加</b>」をタップ</div>' +
+        '<div class="ps"><span class="ps-n">3</span>ホーム画面の<b>アイコンから開く</b>と通知をオンにできます</div>' +
+      '</div>' +
+      '<button type="button" class="btn push-btn-lg" id="pushHowtoBtn">📱 くわしい追加方法を見る</button>';
     // 「新着情報」カードの直後に差し込む（見つからなければ先頭）
     var firstCard = main.querySelector("section.card");
     if (firstCard) main.insertBefore(card, firstCard.nextElementSibling || null);
