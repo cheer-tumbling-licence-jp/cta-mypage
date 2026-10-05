@@ -24,7 +24,33 @@
   async function currentSession() {
     const { data } = await client.auth.getSession();
     if (!data || !data.session) return null;
+    // 保存されているセッションが期限切れのまま返ってくることがある。
+    // そのまま画面を描くと、見た目は開けるのに API だけ 401 で失敗し、
+    // 「認定証が出ない」等の原因が分からない不具合になるため、ここで更新を試す。
+    const exp = data.session.expires_at ? data.session.expires_at * 1000 : 0;
+    if (exp && exp < Date.now()) {
+      try {
+        const r = await client.auth.refreshSession();
+        if (r.error || !r.data || !r.data.session) return null;  // 更新できない＝ログインし直し
+        return { role: "member", email: r.data.session.user.email, userId: r.data.session.user.id };
+      } catch (e) {
+        return null;
+      }
+    }
     return { role: "member", email: data.session.user.email, userId: data.session.user.id };
+  }
+
+  // 認証切れが原因のエラーかを見分ける（通信エラーと区別する）
+  function isAuthError(err) {
+    const m = String((err && (err.message || err.error || err)) || "");
+    const st = Number(err && (err.status || err.statusCode)) || 0;
+    return st === 401 || st === 403 || /jwt|token|expired|unauthor|invalid claim/i.test(m);
+  }
+
+  function isNotFound(err) {
+    const m = String((err && (err.message || err.error || err)) || "");
+    const st = Number(err && (err.status || err.statusCode)) || 0;
+    return st === 404 || /not.?found|does not exist|no such/i.test(m);
   }
 
   // アプリの公開フォルダURL（…/cta-mypage/）を求める
@@ -119,14 +145,33 @@
   }
 
   // 認定証PDFの短時間有効リンク（合格者が自分の分だけ取得可。なければ null）
+  // 認定証のダウンロードURL。
+  // 失敗の理由を呼び出し側に伝える（以前は何が起きても null を返していたため、
+  // ログイン切れでも「発行準備中」と表示され、原因が分からなかった）。
+  //   成功      → { url }
+  //   未アップ  → { reason: "not-found" }
+  //   ログイン切れ → { reason: "session-expired" }
+  //   通信不良  → { reason: "network" }
   async function getCertificateUrl(memberCode) {
     const path = (memberCode || "") + ".pdf";
+
+    // 先にセッションを確かめる。切れていれば更新を試し、だめならログインし直してもらう。
+    const sess = await currentSession();
+    if (!sess) return { reason: "session-expired" };
+
     try {
-      const { data, error } = await client.storage.from("certificates").createSignedUrl(path, 120);
-      if (error || !data) return null;
-      return data.signedUrl;
+      // 有効時間は5分。押してから実際に開くまでの間に切れないようにする。
+      const { data, error } = await client.storage.from("certificates").createSignedUrl(path, 300);
+      if (error) {
+        if (isAuthError(error)) return { reason: "session-expired" };
+        if (isNotFound(error)) return { reason: "not-found" };
+        return { reason: "error", detail: String(error.message || error) };
+      }
+      if (!data || !data.signedUrl) return { reason: "not-found" };
+      return { url: data.signedUrl };
     } catch (e) {
-      return null;
+      if (isAuthError(e)) return { reason: "session-expired" };
+      return { reason: "network" };
     }
   }
 

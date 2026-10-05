@@ -295,9 +295,18 @@
             const orig = btn.textContent;
             btn.disabled = true; btn.textContent = "準備中…";
             try {
-              const url = await D.getCertificateUrl(btn.getAttribute("data-member"));
-              if (url) {
-                location.href = url;
+              const r = await D.getCertificateUrl(btn.getAttribute("data-member"));
+              if (r && r.url) {
+                location.href = r.url;
+              } else if (r && r.reason === "session-expired") {
+                // 以前はこの場合も「発行準備中」と出てしまい、
+                // 日数が経ってから押した方が原因に気づけなかった。
+                alert("ログインの有効期限が切れました。\nもう一度ログインしてください。");
+                await D.logout();
+                location.href = "index.html";
+                return;
+              } else if (r && r.reason === "network") {
+                alert("通信がうまくいきませんでした。\n電波のよい場所でもう一度お試しください。");
               } else {
                 alert("認定証は現在発行準備中です。発行されましたら、こちらからダウンロードできます。");
               }
