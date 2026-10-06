@@ -241,6 +241,119 @@
       }
     } catch (e) {}
 
+    // 登録情報（住所の編集 ＋ メールアドレス変更届）
+    try {
+      if (profile) {
+        document.getElementById("regName").textContent = profile.name || "—";
+        document.getElementById("regCode").textContent = profile.memberId || "—";
+        document.getElementById("regOrg").textContent  = profile.org || "（未登録）";
+        document.getElementById("regEmail").textContent = profile.email || session.email || "—";
+        document.getElementById("postalCode").value = profile.postalCode || "";
+        document.getElementById("address").value    = profile.address || "";
+      }
+
+      // ---- 住所の保存 ----
+      var addrForm = document.getElementById("addressForm");
+      addrForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var pc  = document.getElementById("postalCode").value.trim();
+        var ad  = document.getElementById("address").value.trim();
+        var btn = document.getElementById("addressBtn");
+        var msg = document.getElementById("addressMsg");
+        msg.className = "reg-msg";
+
+        if (!ad) {
+          msg.className = "reg-msg err";
+          msg.textContent = "ご住所を入力してください。";
+          return;
+        }
+        if (pc && !/^\d{3}-?\d{4}$/.test(pc)) {
+          msg.className = "reg-msg err";
+          msg.textContent = "郵便番号は 7桁の数字でご入力ください（例：327-0001）。";
+          return;
+        }
+        btn.disabled = true; btn.textContent = "保存中…";
+        msg.textContent = "";
+        try {
+          await D.updateAddress(pc, ad);
+          msg.className = "reg-msg ok";
+          msg.innerHTML = "<b>✓ 住所を保存しました</b><br>認定証はこちらの住所にお送りします。";
+        } catch (err) {
+          msg.className = "reg-msg err";
+          msg.textContent = "保存に失敗しました：" + (err.message || "");
+        } finally {
+          btn.disabled = false; btn.textContent = "住所を保存する";
+          setTimeout(function () { msg.textContent = ""; msg.className = "reg-msg"; }, 6000);
+        }
+      });
+
+      // ---- メールアドレス変更届 ----
+      var toggleBtn = document.getElementById("toggleEmailForm");
+      var emailForm = document.getElementById("emailForm");
+      toggleBtn.addEventListener("click", function () {
+        var open = emailForm.style.display !== "none";
+        emailForm.style.display = open ? "none" : "block";
+        toggleBtn.textContent = open ? "メールアドレスの変更を申し込む" : "閉じる";
+      });
+
+      emailForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var ne   = document.getElementById("newEmail").value.trim();
+        var note = document.getElementById("emailNote").value.trim();
+        var btn  = document.getElementById("emailBtn");
+        var msg  = document.getElementById("emailMsg");
+        msg.className = "reg-msg";
+
+        if (!ne || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ne)) {
+          msg.className = "reg-msg err";
+          msg.textContent = "新しいメールアドレスを正しくご入力ください。";
+          return;
+        }
+        if (profile && ne.toLowerCase() === String(profile.email || "").toLowerCase()) {
+          msg.className = "reg-msg err";
+          msg.textContent = "現在ご登録のアドレスと同じです。";
+          return;
+        }
+        btn.disabled = true; btn.textContent = "送信中…";
+        try {
+          await D.requestEmailChange(ne, note);
+          msg.className = "reg-msg ok";
+          msg.innerHTML = "<b>✓ 変更のお申し込みを受け付けました</b><br>" +
+            "協会で切り替えたあと、<b>" + esc(ne) + "</b> でログインできるようになります。" +
+            "切り替えが済むまでは、これまでのアドレスでログインしてください。";
+          btn.textContent = "送信しました";
+          document.getElementById("newEmail").value = "";
+          document.getElementById("emailNote").value = "";
+          setTimeout(function () {
+            emailForm.style.display = "none";
+            toggleBtn.textContent = "メールアドレスの変更を申し込む";
+            btn.disabled = false; btn.textContent = "変更を申し込む";
+            renderPending();
+          }, 4000);
+        } catch (err) {
+          msg.className = "reg-msg err";
+          msg.textContent = "送信に失敗しました：" + (err.message || "");
+          btn.disabled = false; btn.textContent = "変更を申し込む";
+        }
+      });
+
+      // 申請中の表示
+      async function renderPending() {
+        try {
+          var reqs = await D.getMyEmailChangeRequests();
+          var pend = (reqs || []).filter(function (r) { return r.status === "pending"; });
+          var box = document.getElementById("emailPending");
+          if (!pend.length) { box.style.display = "none"; box.innerHTML = ""; return; }
+          box.style.display = "";
+          box.innerHTML = pend.map(function (r) {
+            return '<div class="pending-item">⏳ <b>' + esc(r.newEmail) + '</b> への変更を申請中です' +
+                   '<span class="pending-date">（' + esc(String(r.requestedAt).slice(0, 10)) + ' 受付）</span></div>';
+          }).join("");
+        } catch (e) {}
+      }
+      renderPending();
+    } catch (e) {}
+
     // 通知設定（メール ON/OFF）
     try {
       const notifyEl = document.getElementById("notifyEmail");

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>マイページ｜チアタンブリング協会</title>
-  <link rel="stylesheet" href="css/styles.css?v=20260923b" />
+  <link rel="stylesheet" href="css/styles.css?v=20260923c" />
   <link rel="apple-touch-icon" href="icon-180.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -74,6 +74,63 @@
       </div>
     </section>
 
+    <!-- 登録情報 -->
+    <section class="card" id="profileCard">
+      <h2><span class="ic">📮</span>登録情報</h2>
+      <p class="card-lead">認定証の郵送先に使用します。引っ越しなどで変わった場合は、こちらで最新の内容に更新してください。</p>
+
+      <div class="reg-readonly" id="regReadonly">
+        <div class="reg-row"><span class="reg-k">お名前</span><span class="reg-v" id="regName">—</span></div>
+        <div class="reg-row"><span class="reg-k">受講者ID</span><span class="reg-v" id="regCode">—</span></div>
+        <div class="reg-row"><span class="reg-k">所属</span><span class="reg-v" id="regOrg">—</span></div>
+      </div>
+
+      <form id="addressForm" class="reg-form">
+        <div class="field">
+          <label for="postalCode">郵便番号</label>
+          <input type="text" id="postalCode" inputmode="numeric" autocomplete="postal-code"
+                 placeholder="例：327-0001（ハイフンあり・なし どちらでも）" maxlength="9" />
+        </div>
+        <div class="field">
+          <label for="address">ご住所（認定証の郵送先）</label>
+          <textarea id="address" rows="3" autocomplete="street-address"
+                    placeholder="例：栃木県佐野市◯◯町1-2-3 △△マンション101号"></textarea>
+          <div class="hint">都道府県から建物名・部屋番号まで、お届け先としてそのまま使える形でご記入ください。</div>
+        </div>
+        <button class="btn" type="submit" id="addressBtn">住所を保存する</button>
+        <div class="reg-msg" id="addressMsg"></div>
+      </form>
+
+      <hr class="soft">
+
+      <div class="reg-email">
+        <div class="reg-email-head">
+          <div class="reg-email-title">メールアドレスの変更</div>
+          <div class="reg-email-now">現在：<b id="regEmail">—</b></div>
+        </div>
+        <p class="reg-email-note">
+          メールアドレスはログインIDを兼ねているため、この画面では切り替わりません。<br>
+          新しいアドレスをお知らせいただくと、<b>協会で切り替え後、新しいアドレスでログインできるようになります</b>。
+        </p>
+        <button type="button" class="btn ghost sm" id="toggleEmailForm">メールアドレスの変更を申し込む</button>
+
+        <form id="emailForm" class="reg-form" style="display:none; margin-top:14px">
+          <div class="field">
+            <label for="newEmail">新しいメールアドレス</label>
+            <input type="email" id="newEmail" autocomplete="email" placeholder="new@example.com" />
+          </div>
+          <div class="field">
+            <label for="emailNote">協会への連絡事項（任意）</label>
+            <textarea id="emailNote" rows="2" placeholder="例：チームの共有アドレスから個人のアドレスに変更したい"></textarea>
+          </div>
+          <button class="btn" type="submit" id="emailBtn">変更を申し込む</button>
+          <div class="reg-msg" id="emailMsg"></div>
+        </form>
+
+        <div id="emailPending" class="reg-pending" style="display:none"></div>
+      </div>
+    </section>
+
     <!-- 通知設定 -->
     <section class="card" id="settingsCard">
       <h2><span class="ic">⚙️</span>通知設定</h2>
@@ -94,9 +151,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=20260917b"></script>
-  <script src="js/data.supabase.js?v=20261005a"></script>
-  <script src="js/mypage.js?v=20261005a"></script>
+  <script src="js/supabase-config.js?v=20260923c"></script>
+  <script src="js/data.supabase.js?v=20260923c"></script>
+  <script src="js/mypage.js?v=20260923c"></script>
   <script src="js/install-prompt.js?v=20260727a"></script>
   <script src="js/badge.js?v=20260917c"></script>
   <script src="js/push-subscribe.js?v=20260923b"></script>

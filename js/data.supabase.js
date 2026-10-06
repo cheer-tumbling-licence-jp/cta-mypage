@@ -88,7 +88,9 @@
   // ---- データ取得（RLS により自動的に「自分の分だけ」） -------------
   function mapMember(r) {
     return { memberId: r.member_code, name: r.name, kana: r.kana, org: r.org, email: r.email,
-             notifyEmail: r.notify_email !== false };
+             notifyEmail: r.notify_email !== false,
+             postalCode: r.postal_code || "", address: r.address || "",
+             addressUpdatedAt: r.address_updated_at || "" };
   }
   function mapResult(r) {
     return {
@@ -275,6 +277,50 @@
     } catch (e) { return null; }
   }
 
+  // 住所を更新（本人のみ／RLS で強制）。認定証の郵送先として使う
+  async function updateAddress(postalCode, address) {
+    const s = await currentSession();
+    if (!s) throw new Error("ログインが必要です");
+    const { error } = await client.from("members")
+      .update({
+        postal_code: (postalCode || "").trim(),
+        address: (address || "").trim(),
+        address_updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", s.userId);
+    if (error) throw new Error(jp(error.message));
+    return true;
+  }
+
+  // メールアドレス変更届を提出（その場では変更しない。協会が切り替える）
+  async function requestEmailChange(newEmail, note) {
+    const s = await currentSession();
+    if (!s) throw new Error("ログインが必要です");
+    let profile = null;
+    try { profile = await getMyProfile(); } catch (e) {}
+    const { error } = await client.from("email_change_requests").insert({
+      user_id: s.userId,
+      member_code: profile && profile.memberId,
+      member_name: profile && profile.name,
+      current_email: s.email,
+      new_email: (newEmail || "").trim(),
+      note: (note || "").trim() || null,
+      status: "pending",
+    });
+    if (error) throw new Error(jp(error.message));
+    return true;
+  }
+
+  // 自分が出した変更届（未処理のもの）
+  async function getMyEmailChangeRequests() {
+    const { data, error } = await client.from("email_change_requests")
+      .select("*").order("requested_at", { ascending: false }).limit(5);
+    if (error) return [];
+    return (data || []).map((r) => ({
+      id: r.id, newEmail: r.new_email, status: r.status, requestedAt: r.requested_at,
+    }));
+  }
+
   // 通知設定を更新（本人のみ／RLS で強制）
   async function updateNotifyEmail(enabled) {
     const s = await currentSession();
@@ -293,6 +339,7 @@
     signUpMember, loginMemberEmail, sendPasswordReset, logout,
     getMyProfile, getMyResults, getMyCertificates, getMyNews, getMyNextSteps,
     getPaymentInfo, getCertificateUrl, updateNotifyEmail,
+    updateAddress, requestEmailChange, getMyEmailChangeRequests,
     getPrepLessons, getPrepSignedUrl,
     getTeachingMaterials, getTeachingSignedUrl,
     savePushSubscription,

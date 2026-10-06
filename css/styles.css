@@ -632,6 +632,83 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
 }
 
 /* =====================================================================
+ * 登録情報（住所編集・メール変更届）
+ * ===================================================================== */
+.reg-readonly {
+  background: #f7f9fb;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px 0;
+  margin-bottom: 18px;
+}
+.reg-row {
+  display: flex;
+  gap: 12px;
+  padding: 9px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.reg-row:last-child { border-bottom: none; }
+.reg-k { flex: 0 0 86px; color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+.reg-v { flex: 1; color: var(--text); font-weight: 600; word-break: break-all; }
+
+.reg-form .field { margin-bottom: 14px; }
+.reg-form textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  background: #fff;
+  resize: vertical;
+}
+.reg-form textarea:focus,
+.reg-form input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.reg-msg { margin-top: 10px; font-size: 13.5px; line-height: 1.6; }
+.reg-msg.ok  { color: var(--good); }
+.reg-msg.err { color: var(--warn); }
+
+.reg-email { margin-top: 4px; }
+.reg-email-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.reg-email-title { font-weight: 700; color: var(--navy); font-size: 15.5px; }
+.reg-email-now { color: var(--muted); font-size: 13px; word-break: break-all; }
+.reg-email-now b { color: var(--text); }
+.reg-email-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0 0 12px;
+  background: #fbfbf7;
+  border-left: 3px solid var(--gold);
+  padding: 10px 12px;
+  border-radius: 4px;
+}
+.reg-email-note b { color: var(--navy-dark); }
+
+.reg-pending { margin-top: 12px; }
+.pending-item {
+  background: var(--pending-bg);
+  color: var(--pending);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+.pending-date { color: var(--muted); font-size: 12px; }
+
+/* =====================================================================
  * 通知設定（トグルスイッチ）
  * ===================================================================== */
 .setting-row {
