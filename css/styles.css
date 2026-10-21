@@ -596,39 +596,79 @@ hr.soft { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
 .error-msg { color: var(--warn); font-size: 13px; padding: 8px; }
 
 /* =====================================================================
- * オンラインサロン カード
+ * オンラインサロン カード（CheerNic のロゴを主役にする）
+ * ---------------------------------------------------------------------
+ * ロゴ画像は白背景なので、カードも白〜淡色にしてロゴを浮かせる。
+ * 以前の紺グラデーションだとロゴの白地が四角く浮いてしまうため変更。
  * ===================================================================== */
 .salon-card {
-  background: linear-gradient(135deg, #143a5a 0%, #2f7fb5 100%);
-  color: #fff;
-  border: none;
+  padding: 0;                 /* ロゴを上端いっぱいに出すため */
+  overflow: hidden;
+  border: 1px solid var(--line);
 }
-.salon-card h2 { color: #fff; }
-.salon-card .card-lead { color: rgba(255,255,255,.85); font-size: 13.5px; }
-.salon-inner {
+/* ロゴ画像は上#f4f4f4→下#dbdbdb のグラデ地を持っている。
+   帯の背景に同じグラデを敷くことで、画像の地とシームレスにつながり、
+   白いカードの上に四角く浮いて見えるのを防ぐ。
+   画像自体は原寸(800px)を超えて拡大しない（PCでボケるため）。 */
+.salon-logo-wrap {
+  line-height: 0;                 /* 画像下の隙間を消す */
+  background: linear-gradient(180deg, #f4f4f4 0%, #dbdbdb 100%);
+  border-bottom: 1px solid var(--line);
+}
+.salon-logo {
+  display: block;
+  width: 100%;
+  max-width: 560px;               /* 原寸800px以下に抑えて鮮明さを保つ */
+  height: auto;
+  margin: 0 auto;
+}
+.salon-body { padding: 18px 20px 20px; }
+.salon-lead {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.75;
+  margin: 0 0 14px;
+}
+
+/* サロンで得られるものを3点で示す */
+.salon-points {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fbfdfe;
+}
+.salon-points li {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
 }
-.salon-icon {
-  font-size: 40px;
-  flex-shrink: 0;
-  line-height: 1;
-}
-.salon-text { flex: 1; min-width: 200px; }
+.salon-points li:last-child { border-bottom: none; }
+.sp-ic { font-size: 17px; flex-shrink: 0; line-height: 1; }
+
 .salon-btn {
-  background: var(--gold);
-  color: var(--navy-dark);
-  font-weight: 700;
-  flex-shrink: 0;
+  display: block;
+  width: 100%;
+  background: #c2185b;        /* CheerNic のピンク */
+  color: #fff;
+  font-weight: 800;
+  font-size: 15.5px;
+  text-align: center;
   text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(194, 24, 91, .25);
 }
-.salon-btn:hover { opacity: .9; color: var(--navy-dark); }
-@media (max-width: 500px) {
-  .salon-btn { width: 100%; text-align: center; }
+.salon-btn:hover { background: #a9154e; color: #fff; }
+
+@media (max-width: 480px) {
+  .salon-body { padding: 16px; }
 }
 
 /* =====================================================================
